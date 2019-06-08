@@ -1,14 +1,14 @@
-package com.andy.rpc.server.v1;
+package com.andy.rpc.server.v2;
 
 import com.andy.rpc.server.HelloServiceImpl;
+import com.andy.rpc.server.api.IHelloService;
 import com.andy.rpc.server.api.RpcRequest;
 import com.andy.rpc.server.api.SerializableUtils;
-import com.andy.rpc.server.api.IHelloService;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,37 +16,42 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p></p>
  *
  * @author AndyWang QQ:295268319
- * @date 2019/6/7 0007 21:40
+ * @date 2019/6/8 0008 21:40
  */
-public class RpcServer {
+public class ProcessHandler implements Runnable{
 
-    /**
-     * 通过Map来做接口映射到实现类,从map中取
-     */
     private static ConcurrentHashMap<Class<?>, Class<?>> implMap = new ConcurrentHashMap();
 
     static {
         implMap.put(IHelloService.class, HelloServiceImpl.class);
     }
 
-    public static void openSocket() throws Exception {
-        ServerSocket serverSocket = new ServerSocket(9999);
-        try {
-            while (true) {
-                Socket socket = serverSocket.accept();
+    private Socket socket;
+    public ProcessHandler(Socket socket){
+        this.socket = socket;
+    }
 
-                InputStream in = socket.getInputStream();
-                byte[] buf = new byte[1024];
-                in.read(buf);
-                byte[] formatDate = formatData(buf);
-                OutputStream out = socket.getOutputStream();
-                out.write(formatDate);
-                socket.close();
-            }
-        } catch (Exception e) {
+    @Override
+    public void run() {
+        try{
+            InputStream in = socket.getInputStream();
+            byte[] buf = new byte[1024];
+            in.read(buf);
+            byte[] formatDate = formatData(buf);
+            OutputStream out = socket.getOutputStream();
+            out.write(formatDate);
+        } catch (Exception e){
             e.printStackTrace();
-            serverSocket.close();
+        } finally {
+            if (socket != null){
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
     }
 
     private static byte[] formatData(byte[] buf) throws Exception {
@@ -64,13 +69,5 @@ public class RpcServer {
         Method method = implClazz.getMethod(request.getMethod(), typeClazzs);
         Object object = method.invoke(implClazz.newInstance(), request.getArgs());
         return SerializableUtils.serialized(object);
-    }
-
-    public static void main(String[] args) {
-        try {
-            openSocket();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
