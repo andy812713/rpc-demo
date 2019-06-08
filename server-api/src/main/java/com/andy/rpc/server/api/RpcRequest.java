@@ -2,6 +2,7 @@ package com.andy.rpc.server.api;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * <p>请求实体类</p>
@@ -47,5 +48,15 @@ public class RpcRequest implements Serializable {
 
     public void setTypes(String[] types) {
         this.types = types;
+    }
+
+    @Override
+    public String toString() {
+        return "RpcRequest{" +
+                "serverName='" + serverName + '\'' +
+                ", method='" + method + '\'' +
+                ", args=" + Arrays.toString(args) +
+                ", types=" + Arrays.toString(types) +
+                '}';
     }
 }
