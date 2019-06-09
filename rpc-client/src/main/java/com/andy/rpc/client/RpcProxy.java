@@ -15,8 +15,8 @@ import java.lang.reflect.Proxy;
  */
 public class RpcProxy {
 
-    public Object getInstance(Class<?> service){
-        return Proxy.newProxyInstance(service.getClassLoader(),
+    public <T> T getInstance(final Class<T> service){
+        return (T) Proxy.newProxyInstance(service.getClassLoader(),
                 new Class[]{service},
                 new RpcInvocationHandler());
     }

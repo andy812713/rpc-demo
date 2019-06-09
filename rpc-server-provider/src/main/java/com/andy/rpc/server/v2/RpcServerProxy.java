@@ -24,6 +24,7 @@ public class RpcServerProxy {
         try {
             serverSocket = new ServerSocket(port);
             while (true){
+                //BIO阻塞
                 executorService.execute(new ProcessHandler(serverSocket.accept()));
             }
         } catch (Exception e) {
