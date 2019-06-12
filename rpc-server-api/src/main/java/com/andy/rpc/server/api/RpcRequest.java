@@ -1,7 +1,6 @@
 package com.andy.rpc.server.api;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
@@ -17,6 +16,7 @@ public class RpcRequest implements Serializable {
     private String method;
     private Object[] args;
     private String[] types;
+    private String version;
 
     public String getServerName() {
         return serverName;
@@ -50,6 +50,14 @@ public class RpcRequest implements Serializable {
         this.types = types;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "RpcRequest{" +
@@ -57,6 +65,7 @@ public class RpcRequest implements Serializable {
                 ", method='" + method + '\'' +
                 ", args=" + Arrays.toString(args) +
                 ", types=" + Arrays.toString(types) +
+                ", version='" + version + '\'' +
                 '}';
     }
 }

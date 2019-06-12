@@ -31,6 +31,7 @@ public class RpcProxy {
             request.setServerName(className);
             request.setArgs(args);
             request.setMethod(method.getName());
+            request.setVersion("2.0");
             String [] types = null;
             if(args!=null) {
                 types = new String [args.length];
@@ -39,8 +40,8 @@ public class RpcProxy {
                 }
             }
             request.setTypes(types);
-            byte[] byteArray = SerializableUtils.serialized(request);
-            return RpcClient.send(byteArray);
+            //byte[] byteArray = SerializableUtils.serialized(request);
+            return RpcClient.send(request);
         }
     }
 }

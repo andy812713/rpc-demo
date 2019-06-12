@@ -1,10 +1,13 @@
 package com.andy.rpc.client;
 
 import com.andy.rpc.server.api.IHelloService;
+import com.andy.rpc.server.api.RpcRequest;
 import com.andy.rpc.server.api.SerializableUtils;
 
 
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -18,7 +21,7 @@ public class RpcClient {
 
     public static void main(String[] args) {
         RpcProxy rpcProxy = new RpcProxy();
-        IHelloService helloService = (IHelloService) rpcProxy.getInstance(IHelloService.class);
+        IHelloService helloService = rpcProxy.getInstance(IHelloService.class);
         System.out.println("getUser = [" + helloService.getUser("andy") + "]");
         System.out.println("sayHello = [" + helloService.sayHello("andy") + "]");
     }
@@ -37,5 +40,19 @@ public class RpcClient {
         outputStream.close();
         socket.close();
         return formatDate;
+    }
+
+    public static Object send(RpcRequest request) throws Exception {
+        Socket socket = new Socket("127.0.0.1", 9999);
+        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+        outputStream.writeObject(request);
+        outputStream.flush();
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        Object obj = in.readObject();
+
+        in.close();
+        outputStream.close();
+        socket.close();
+        return obj;
     }
 }

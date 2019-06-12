@@ -1,8 +1,7 @@
-package com.andy.rpc.server;
+package com.andy.rpc.server.v3;
 
 import com.andy.rpc.server.api.IHelloService;
 import com.andy.rpc.server.api.User;
-import com.andy.rpc.server.v3.RpcServerAnnotation;
 
 /**
  * <p></p>
@@ -11,7 +10,7 @@ import com.andy.rpc.server.v3.RpcServerAnnotation;
  * @date 2019/6/7 0007 20:24
  */
 @RpcServerAnnotation(value = IHelloService.class)
-public class HelloServiceImpl implements IHelloService {
+public class HelloServiceImplV3 implements IHelloService {
 
     @Override
     public String sayHello(String name) {
